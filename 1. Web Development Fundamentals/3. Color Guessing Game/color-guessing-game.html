@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Guess Game</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Color Guessing Game</h1>
+    <button type="button" onclick="runGame()">Start Game</button>
+    <!-- <video width="100%" height="100%" autoplay loop>
+      <source src="./Colored_Pencil.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video> -->
+
+    <script>
+      // Defining the 10 colors to choose from
+      const COLORS_ARRAY = [
+        "blue",
+        "cyan",
+        "gold",
+        "gray",
+        "green",
+        "magenta",
+        "orange",
+        "red",
+        "white",
+        "yellow",
+      ];
+      // sort the colors alphabetically
+      COLORS_ARRAY[2] = "silver";
+      COLORS_ARRAY.sort();
+
+      //   Defining the 1st function runGame()
+      function runGame() {
+        // Initializing variables
+        let guess = "";
+        let correct = false;
+        let numTries = 0;
+        document.body.style.background = "white";
+
+        // The PC will choose one of the 10 colors
+        const targetIndex = Math.floor(Math.random() * 10);
+        let target = COLORS_ARRAY[targetIndex];
+        console.log(target);
+
+        // a loop so the user will guess the correct color
+        do {
+          let guess = prompt(
+            "I'm thinking of one of these colors:\n\n" +
+              COLORS_ARRAY.join(" | ") +
+              "\n\nWhat color am I thinking of?\n"
+          );
+
+          //   if the user hits cancel, it will exit the game
+          if (guess === null) {
+            alert("The game was ended by you");
+            return;
+          }
+
+          correct = checkGuess(guess.toLocaleLowerCase(), target, numTries);
+          numTries++;
+        } while (!correct);
+
+        // alert congratulation the use guess the correct color
+        // and change the color of the document body to the correct one
+        alert(
+          "congratulations!\n" + "you guessed it from " + numTries + " times"
+        );
+        document.body.style.background = target;
+      }
+
+      //   Defining the 2nd function checkGame(guess, target)
+      function checkGuess(guess, target, numTries) {
+        let correct = false;
+        const sorryMsg = "Sorry your guess is not correct "; // Sorry Message
+        const tryMsg = "Please try again\n"; // Try Again Message
+        numTries++;
+        // checks if the guessed color is one the the following:
+        // 1. the guess is not recognized
+        // 2. the guess is alphabetically is greater than the target color
+        // 3. the guess is alphabetically is less than target color
+        // 4. if none of these cases this means that the guess is correct
+
+        if (!COLORS_ARRAY.includes(guess)) {
+          alert(
+            "Sorry this color not recognized\n" +
+              "you have tried " +
+              numTries +
+              " times\n" +
+              tryMsg
+          );
+        } else if (guess > target) {
+          alert(
+            sorryMsg +
+              "and is alphabetically higher than target color\n" +
+              "you have tried " +
+              numTries +
+              " times\n" +
+              tryMsg
+          );
+        } else if (guess < target) {
+          alert(
+            sorryMsg +
+              "and is alphabetically lower than target color\n" +
+              "you have tried " +
+              numTries +
+              " times\n" +
+              tryMsg
+          );
+        } else {
+          correct = true;
+        }
+        return correct;
+      }
+    </script>
+  </body>
+</html>
