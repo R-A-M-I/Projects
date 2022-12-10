@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="./images/smile.ico" type="image/x-icon" />
+    <title>Matching Game</title>
+  </head>
+  <body>
+    <h1>Smile Game</h1>
+    <!-- Button to start the game -->
+    <button
+      type="button"
+      id="btn1"
+      onclick="setNumberOfFaces();generateFaces()"
+    >
+      Start Game
+    </button>
+    <button type-="button" id="btn2" onclick="reset()">Reset Game</button>
+    <p>Click on the extra smiling face on the left</p>
+    Wins = <span id="wins"> </span> Loses = <span id="loses"> </span>
+
+    <p>
+      How Many faces do you want to generate?
+      <input type="number" name="faces" id="faces" min="2" value="2" />
+    </p>
+
+    <!-- Main board game that consists of two divs -->
+    <main id="board">
+      <div id="leftSide"></div>
+      <div id="rightSide"></div>
+    </main>
+
+    <!-- The javascript part describing the game logic -->
+    <script>
+      // Defining the variables
+      let numberOfFaces = 0;
+      let faces = 0;
+      let theLeftSide = document.getElementById("leftSide");
+      let theRightSide = document.getElementById("rightSide");
+      let winScore = 0;
+      let loseScore = 0;
+      document.getElementById("wins").innerHTML = winScore;
+      document.getElementById("loses").innerHTML = loseScore;
+      let audio = new Audio("./audio/background-music.mp3");
+
+      //   set number of faces
+      function setNumberOfFaces() {
+        faces = parseInt(document.getElementById("faces").value);
+        numberOfFaces = faces;
+        audio.play();
+      }
+
+      //   1st function generateFaces
+      function generateFaces() {
+        document.getElementById("btn1").disabled = true;
+        document.getElementById("btn2").disabled = true;
+
+        for (i = 1; i <= numberOfFaces; i++) {
+          // random numbers to generate
+
+          let randomTop = Math.floor(Math.random() * 400);
+          let randomLeft = Math.floor(Math.random() * 400);
+          let face = document.createElement("img");
+
+          face.src = "./images/smile.png";
+          face.style.top = randomTop + "px";
+          face.style.left = randomLeft + "px";
+          face.style.width = "100px";
+          theLeftSide.appendChild(face);
+        }
+
+        let leftSideImages = theLeftSide.cloneNode(true);
+        leftSideImages.removeChild(leftSideImages.lastChild);
+        theRightSide.appendChild(leftSideImages);
+        theLeftSide.lastChild.addEventListener("click", nextLevel);
+        document.getElementById("board").addEventListener("click", gameOver);
+      }
+
+      //   2nd function nextLevel
+      function nextLevel(clickEvent) {
+        clickEvent.stopPropagation();
+        winScore++;
+        document.getElementById("wins").innerHTML = winScore;
+
+        while (theLeftSide.firstChild) {
+          theLeftSide.removeChild(theLeftSide.firstChild);
+        }
+        while (theRightSide.firstChild) {
+          theRightSide.removeChild(theRightSide.firstChild);
+        }
+
+        numberOfFaces += faces;
+        generateFaces();
+        let audio = new Audio("./audio/win.mp3");
+        audio.play();
+      }
+
+      //   3rd function gameOver
+      function gameOver() {
+        loseScore++;
+        document.getElementById("loses").innerHTML = loseScore;
+
+        let audio = new Audio("./audio/loose.mp3");
+        audio.play();
+        alert("you loose!");
+        theLeftSide.lastChild.removeEventListener("click", nextLevel);
+        document.getElementById("board").removeEventListener("click", gameOver);
+        document.getElementById("btn1").disabled = false;
+        document.getElementById("btn2").disabled = false;
+        theLeftSide.innerHTML = "";
+        theRightSide.innerHTML = "";
+        numberOfFaces = faces;
+      }
+
+      function reset() {
+        winScore = 0;
+        loseScore = 0;
+        document.getElementById("wins").innerHTML = winScore;
+        document.getElementById("loses").innerHTML = loseScore;
+      }
+    </script>
+  </body>
+</html>
